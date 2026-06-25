@@ -13,6 +13,7 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'loseGame'): void;
+  (e: 'destroyMeteor'): void;
 }>()
 
 const meteorsBg = [
@@ -69,6 +70,7 @@ const checkCollision = () => {
     }
 
     if (hitByBullet) {
+      emit("destroyMeteor")
       return false
     }
 

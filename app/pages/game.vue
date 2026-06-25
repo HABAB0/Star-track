@@ -10,6 +10,8 @@ const posY = ref<number>(0)
 const posX = ref<number>(0)
 const bullets = ref<bullet[]>([])
 const gameTime = ref(0)
+const score = ref<number>(0)
+const gameKey = ref<number>(0)
 
 const closeMenu = () => {
   inMenu.value = false
@@ -24,7 +26,18 @@ const test = () => {
 }
 
 const loseGame = () => {
-  navigateTo('/test')
+  navigateTo('/settings')
+}
+
+const resetGame = () => {
+  score.value = 0
+  gameTime.value = 0
+  gameKey.value ++
+  closeMenu()
+}
+
+const addScore = () => {
+  score.value += 100
 }
 
 const formattedTime = computed(() => {
@@ -58,11 +71,12 @@ useEventListener(window, 'keydown', (event) => {
     <div
         class="main"
     >
-      <div class="game" ref="gameSpace">
-        <p class="absolute p-8 text-3xl">{{ formattedTime }} {{ score }}</p>
+      <div class="game" ref="gameSpace" :key="gameKey">
+        <p class="absolute p-8 text-3xl">{{ formattedTime }} | {{ score }}</p>
         <div v-if="inMenu" class="absolute z-10 flex justify-center items-center w-full h-full bg-black opacity-80">
-            <div class="flex flex-col gap-20">
+            <div class="flex flex-col gap-10">
               <button class="menu-item" @click="closeMenu">Resume</button>
+              <button class="menu-item" @click="resetGame">Restart</button>
               <button class="menu-item" @click="test">Settings</button>
               <button class="menu-item" @click="exit">Exit</button>
             </div>
@@ -74,6 +88,7 @@ useEventListener(window, 'keydown', (event) => {
               @lose-game=""
               :bullets="bullets"
               :inMenu="inMenu"
+              @destroy-meteor="addScore"
           />
         </div>
         <div>
