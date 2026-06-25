@@ -29,7 +29,6 @@ useEventListener(window, 'keydown', (event) => {
   const maxX = spaceW - shipW
   const minY = 0
   const maxY = spaceH - shipH
-  console.log(maxX, maxY)
 
   if (event.code === 'KeyS') {
     posY.value += speed
@@ -48,7 +47,6 @@ useEventListener(window, 'keydown', (event) => {
 
   emit('update:posX', posX.value)
   emit('update:posY', posY.value)
-  console.log(posX.value)
 })
 
 onMounted(() => {

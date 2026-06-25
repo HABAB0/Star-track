@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useEventListener} from "@vueuse/core";
 import Bullets from "~/components/bullets/bullets.vue";
+import type {bullet} from "@/components/types/types.ts"
 
 const gameSpace = ref<HTMLElement>()
 
@@ -8,6 +9,7 @@ const inMenu = ref<boolean>(false)
 const posY = ref<number>(0)
 const posX = ref<number>(0)
 const speed = 30
+const bullets = ref<bullet[]>([])
 
 const closeMenu = () => {
   inMenu.value = false
@@ -48,10 +50,12 @@ useEventListener(window, 'keydown', (event) => {
               :ship-pos-x="posX"
               :ship-pos-y="posY"
               @lose-game=""
+              :bullets="bullets"
           />
         </div>
         <div>
           <bullets
+              v-model:bullets="bullets"
               :ship-pos-x="posX"
               :ship-pos-y="posY"
           />

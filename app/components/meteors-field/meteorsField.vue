@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import {useElementSize, useIntervalFn, useRafFn} from "@vueuse/core";
+import type {bullet, meteor} from "@/components/types/types.ts"
 
 interface Props {
   shipPosX: number
   shipPosY: number
+  bullets: bullet[]
 }
 
 const props = defineProps<Props>()
@@ -23,15 +25,6 @@ const { width, height } = useElementSize(meteorSpace)
 const meteorField = ref<meteor[]>([
 ])
 
-interface meteor {
-  id: string
-  image: string
-  x: number
-  y: number
-  speed: number
-  rotation: number
-}
-
 const meteorSpawner = () => {
   meteorField.value.push({
     id: crypto.randomUUID(),
@@ -49,16 +42,39 @@ const deleteMeteor = (id: string) => {
 }
 
 const checkCollision = () => {
-  meteorField.value.forEach(meteor => {
-    const isCollision =
+  let gameOver = false
+
+  meteorField.value = meteorField.value.filter(meteor => {
+    const hitShip =
         meteor.x < props.shipPosX + 130 &&
         meteor.x + 90 > props.shipPosX &&
         meteor.y < props.shipPosY + 170 &&
         meteor.y + 90 > props.shipPosY
-    if (isCollision) {
-      emit('loseGame')
+
+    if (hitShip) {
+      gameOver = true
     }
+
+    let hitByBullet = false
+    if (props.bullets) {
+      hitByBullet = props.bullets.some(bullet =>
+          meteor.x < bullet.x + 3 &&
+          meteor.x + 90 > bullet.x &&
+          meteor.y < bullet.y + 6 &&
+          meteor.y + 90 > bullet.y
+      )
+    }
+
+    if (hitByBullet) {
+      return false
+    }
+
+    return true
   })
+
+  if (gameOver) {
+    emit('loseGame')
+  }
 }
 
 useRafFn(() => {
@@ -74,7 +90,7 @@ const { pause, resume } = useIntervalFn(meteorSpawner, 1000)
 </script>
 
 <template>
-  <div class="flex relative w-full h-full" ref="meteorSpace">
+  <div class="flex absolute w-full h-full" ref="meteorSpace">
     <div
         v-for="meteor in meteorField"
         :key="meteor.id"
