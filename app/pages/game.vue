@@ -8,7 +8,6 @@ const gameSpace = ref<HTMLElement>()
 const inMenu = ref<boolean>(false)
 const posY = ref<number>(0)
 const posX = ref<number>(0)
-const speed = 30
 const bullets = ref<bullet[]>([])
 
 const closeMenu = () => {

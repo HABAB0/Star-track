@@ -52,7 +52,7 @@ useRafFn(() => {
   emit('update:bullets', bullets.value)
 })
 
-useEventListener(window, 'keydown',(event) => {
+useEventListener(window, 'keyup',(event) => {
   if (event.code === 'Space') {
     bulletSpawner()
   }
