@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useEventListener} from "@vueuse/core";
+import Bullets from "~/components/bullets/bullets.vue";
 
 const gameSpace = ref<HTMLElement>()
 
@@ -15,6 +16,10 @@ const exit = () => {
   navigateTo('/')
 }
 const test = () => {
+  navigateTo('/test')
+}
+
+const loseGame = () => {
   navigateTo('/test')
 }
 
@@ -40,6 +45,13 @@ useEventListener(window, 'keydown', (event) => {
         </div>
         <div>
           <meteors-field
+              :ship-pos-x="posX"
+              :ship-pos-y="posY"
+              @lose-game=""
+          />
+        </div>
+        <div>
+          <bullets
               :ship-pos-x="posX"
               :ship-pos-y="posY"
           />

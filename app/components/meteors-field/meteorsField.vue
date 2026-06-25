@@ -6,11 +6,11 @@ interface Props {
   shipPosY: number
 }
 
-const emit = defineEmits<{
-  (e: 'update:posX', posX: number): void;
-}>()
-
 const props = defineProps<Props>()
+
+const emit = defineEmits<{
+  (e: 'loseGame'): void;
+}>()
 
 const meteorsBg = [
     '/image/meteorite/base-meteor.png',
@@ -51,12 +51,12 @@ const deleteMeteor = (id: string) => {
 const checkCollision = () => {
   meteorField.value.forEach(meteor => {
     const isCollision =
-        meteor.x < props.shipPosX + 130 &&           // Левый край метеорита < правого края корабля
-        meteor.x + 90 > props.shipPosX &&      // Правый край метеорита > левого края корабля
-        meteor.y < props.shipPosY + 170 &&           // Верхний край метеорита < нижнего края корабля
+        meteor.x < props.shipPosX + 130 &&
+        meteor.x + 90 > props.shipPosX &&
+        meteor.y < props.shipPosY + 170 &&
         meteor.y + 90 > props.shipPosY
     if (isCollision) {
-      console.log(props.shipPosX)
+      emit('loseGame')
     }
   })
 }
@@ -66,7 +66,7 @@ useRafFn(() => {
     meteor.y += meteor.speed
     meteor.rotation += Math.random() * 2
   })
-  meteorField.value = meteorField.value.filter(meteor => meteor.y < (height.value + 600))
+  meteorField.value = meteorField.value.filter(meteor => meteor.y < (height.value + 900))
   checkCollision()
 })
 
