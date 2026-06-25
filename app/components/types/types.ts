@@ -19,3 +19,5 @@ export interface meteor {
     speed: number
     rotation: number
 }
+
+export type difficulty = 'easy' | 'normal' | 'hard'

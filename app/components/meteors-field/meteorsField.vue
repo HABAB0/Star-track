@@ -7,6 +7,7 @@ interface Props {
   shipPosY: number
   bullets: bullet[]
   inMenu: boolean
+  difficulty: 'easy' | 'normal' | 'hard'
 }
 
 const props = defineProps<Props>()
@@ -24,8 +25,13 @@ const meteorsBg = [
 const meteorSpace = ref<HTMLElement>()
 const { width, height } = useElementSize(meteorSpace)
 
-const meteorField = ref<meteor[]>([
-])
+const meteorField = ref<meteor[]>([])
+
+const speed = () => {
+  if (props.difficulty === 'easy') return 1
+  if (props.difficulty === 'hard') return 6
+  return 3
+}
 
 const meteorSpawner = () => {
   if (props.inMenu) return
@@ -34,7 +40,7 @@ const meteorSpawner = () => {
     image: meteorsBg[Math.floor(Math.random() * meteorsBg.length)],
     x: Math.random() * width.value,
     y: -100,
-    speed: 2 + Math.random() * 3,
+    speed: 2 + Math.random() * speed(),
     rotation: 0
   })
 }

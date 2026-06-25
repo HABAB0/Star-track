@@ -1,0 +1,128 @@
+<script setup lang="ts">
+type Difficulty = 'easy' | 'normal' | 'hard'
+
+const difficulty = useState<Difficulty>('game-difficulty', () => 'normal')
+
+const options = [
+  { value: 'easy', label: 'EASY' },
+  { value: 'normal', label: 'MID' },
+  { value: 'hard', label: 'HARD' },
+]
+
+const goBack = () => {
+  navigateTo('/game')
+}
+</script>
+
+<template>
+  <div class="settings">
+    <p class="settings__title">Settings</p>
+    <div class="settings__row">
+      <span class="settings__label">Difficulty</span>
+      <div class="segment" >
+        <button
+          v-for="option in options"
+          :key="option.value"
+          class="segment__btn"
+          :class="{ 'segment__btn--active': difficulty === option.value }"
+          @click="difficulty = option.value"
+        >
+          {{ option.label }}
+        </button>
+      </div>
+    </div>
+
+    <button class="settings__back" @click="goBack">Back</button>
+  </div>
+</template>
+
+<style scoped>
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 100vw;
+  height: 100vh;
+  padding: 50px;
+  background: #000;
+  box-sizing: border-box;
+}
+
+.settings__title {
+  margin: 0;
+  font-size: 48px;
+  color: #fff;
+}
+
+.settings__row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings__label {
+  font-size: 24px;
+  color: #8a8a8a;
+  letter-spacing: 0.05em;
+}
+
+.segment {
+  display: flex;
+  gap: 12px;
+  width: fit-content;
+}
+
+.segment__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  padding: 0;
+  font-family: inherit;
+  font-size: 18px;
+  line-height: 1.2;
+  color: #6e6e6e;
+  background: #141414;
+  border: 2px solid #2e2e2e;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.segment__btn:hover {
+  color: #a8a8a8;
+  background: #1e1e1e;
+  border-color: #454545;
+}
+
+.segment__btn--active {
+  color: #e8e8e8;
+  background: #262626;
+  border-color: #6a6a6a;
+  box-shadow: 0 0 0 1px #3a3a3a, inset 0 0 12px rgba(255, 255, 255, 0.04);
+}
+
+.segment__btn--active:hover {
+  color: #fff;
+  background: #2c2c2c;
+  border-color: #7a7a7a;
+}
+
+.settings__back {
+  width: fit-content;
+  padding: 12px 28px;
+  font-family: inherit;
+  font-size: 24px;
+  color: #c8c8c8;
+  background: #121212;
+  border: 2px solid #3a3a3a;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.settings__back:hover {
+  color: #fff;
+  background: #1c1c1c;
+  border-color: #555;
+}
+</style>
