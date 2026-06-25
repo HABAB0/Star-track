@@ -39,9 +39,9 @@ useEventListener(window, 'keydown', (event) => {
       <div class="game" ref="gameSpace">
         <div v-if="inMenu" class="absolute z-10 flex justify-center items-center w-full h-full bg-black opacity-80">
             <div class="flex flex-col gap-20">
-              <button class="menu-item" @click="closeMenu">Возобнови́ть</button>
-              <button class="menu-item" @click="test">Настройки</button>
-              <button class="menu-item" @click="exit">Выход</button>
+              <button class="menu-item" @click="closeMenu">Resume</button>
+              <button class="menu-item" @click="test">Settings</button>
+              <button class="menu-item" @click="exit">Exit</button>
             </div>
         </div>
         <div>
@@ -50,6 +50,8 @@ useEventListener(window, 'keydown', (event) => {
               :ship-pos-y="posY"
               @lose-game=""
               :bullets="bullets"
+              @destroy-meteor=""
+              :inMenu="inMenu"
           />
         </div>
         <div>
@@ -57,6 +59,7 @@ useEventListener(window, 'keydown', (event) => {
               v-model:bullets="bullets"
               :ship-pos-x="posX"
               :ship-pos-y="posY"
+              :inMenu="inMenu"
           />
         </div>
         <div class="">
@@ -64,6 +67,7 @@ useEventListener(window, 'keydown', (event) => {
               :game-space="gameSpace"
               v-model:pos-x="posX"
               v-model:pos-y="posY"
+              :inMenu="inMenu"
           />
         </div>
       </div>

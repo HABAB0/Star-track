@@ -25,7 +25,7 @@ useEventListener(window,'click', handleListener)
           v-if="clickToStart"
           class="flex justify-center items-center mb-50 text-5xl text-white h-full w-full opacity-80 bg-black overflow-hidden"
       >
-        Нажмите любую кнопку
+        Press any button
       </p>
     </div>
 </template>
