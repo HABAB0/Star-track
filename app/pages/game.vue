@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useEventListener} from "@vueuse/core";
+import {useEventListener, useIntervalFn} from "@vueuse/core";
 import Bullets from "~/components/bullets/bullets.vue";
 import type {bullet} from "@/components/types/types.ts"
 
@@ -9,13 +9,16 @@ const inMenu = ref<boolean>(false)
 const posY = ref<number>(0)
 const posX = ref<number>(0)
 const bullets = ref<bullet[]>([])
+const gameTime = ref(0)
 
 const closeMenu = () => {
   inMenu.value = false
 }
+
 const exit = () => {
   navigateTo('/')
 }
+
 const test = () => {
   navigateTo('/test')
 }
@@ -23,6 +26,25 @@ const test = () => {
 const loseGame = () => {
   navigateTo('/test')
 }
+
+const formattedTime = computed(() => {
+  const minutes = Math.floor(gameTime.value / 60)
+  const seconds = gameTime.value % 60
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+})
+
+const { pause, resume } = useIntervalFn(() => {
+  gameTime.value++
+}, 1000)
+
+
+watch(inMenu, (paused) => {
+  if (paused) {
+    pause()
+  } else {
+    resume()
+  }
+})
 
 useEventListener(window, 'keydown', (event) => {
   if (event.code === 'Escape') {
@@ -37,6 +59,7 @@ useEventListener(window, 'keydown', (event) => {
         class="main"
     >
       <div class="game" ref="gameSpace">
+        <p class="absolute p-8 text-3xl">{{ formattedTime }} {{ score }}</p>
         <div v-if="inMenu" class="absolute z-10 flex justify-center items-center w-full h-full bg-black opacity-80">
             <div class="flex flex-col gap-20">
               <button class="menu-item" @click="closeMenu">Resume</button>
@@ -50,7 +73,6 @@ useEventListener(window, 'keydown', (event) => {
               :ship-pos-y="posY"
               @lose-game=""
               :bullets="bullets"
-              @destroy-meteor=""
               :inMenu="inMenu"
           />
         </div>

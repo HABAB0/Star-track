@@ -82,7 +82,7 @@ onMounted(() => {
 
 <style scoped>
 .ship {
-  position: relative;
+  position: absolute;
   width: 130px;
   height: 170px;
   transition: 0.0092s ease;
