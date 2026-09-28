@@ -18,6 +18,13 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+    nitro: {
+        prerender: {
+            routes: ['/'],
+            crawlLinks: true
+        }
+    },
   modules: [
     '@nuxtjs/tailwindcss',
   ],
