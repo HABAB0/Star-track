@@ -27,6 +27,31 @@ const meteorSpace = ref<HTMLElement>()
 const { width, height } = useElementSize(meteorSpace)
 
 const METEOR_SIZE = 90
+const METEOR_RADIUS = 33
+
+const SHIP_W = 130
+const SHIP_H = 170
+const SHIP_INSET_X = 8
+const SHIP_INSET_TOP = 10
+const SHIP_INSET_BOTTOM = 14
+
+const BULLET_SIZE = 40
+const BULLET_RADIUS = 8
+
+const circleHitsRect = (cx: number, cy: number, r: number, rx1: number, ry1: number, rx2: number, ry2: number) => {
+  const nx = Math.max(rx1, Math.min(cx, rx2))
+  const ny = Math.max(ry1, Math.min(cy, ry2))
+  const dx = cx - nx
+  const dy = cy - ny
+  return dx * dx + dy * dy <= r * r
+}
+
+const circleHitsCircle = (x1: number, y1: number, r1: number, x2: number, y2: number, r2: number) => {
+  const dx = x1 - x2
+  const dy = y1 - y2
+  const r = r1 + r2
+  return dx * dx + dy * dy <= r * r
+}
 
 const meteorField = ref<meteor[]>([])
 
@@ -59,12 +84,16 @@ const checkCollision = () => {
   let gameOver = false
   if (props.inMenu || props.gameOver) return
 
+  const shipLeft = props.shipPosX + SHIP_INSET_X
+  const shipRight = props.shipPosX + SHIP_W - SHIP_INSET_X
+  const shipTop = props.shipPosY + SHIP_INSET_TOP
+  const shipBottom = props.shipPosY + SHIP_H - SHIP_INSET_BOTTOM
+
   meteorField.value = meteorField.value.filter(meteor => {
-    const hitShip =
-        meteor.x < props.shipPosX + 130 &&
-        meteor.x + 90 > props.shipPosX &&
-        meteor.y < props.shipPosY + 170 &&
-        meteor.y + 90 > props.shipPosY
+    const mx = meteor.x + METEOR_SIZE / 2
+    const my = meteor.y + METEOR_SIZE / 2
+
+    const hitShip = circleHitsRect(mx, my, METEOR_RADIUS, shipLeft, shipTop, shipRight, shipBottom)
 
     if (hitShip) {
       gameOver = true
@@ -73,10 +102,7 @@ const checkCollision = () => {
     let hitByBullet = false
     if (props.bullets) {
       hitByBullet = props.bullets.some(bullet =>
-          meteor.x < bullet.x + 3 &&
-          meteor.x + 90 > bullet.x &&
-          meteor.y < bullet.y + 6 &&
-          meteor.y + 90 > bullet.y
+          circleHitsCircle(mx, my, METEOR_RADIUS, bullet.x + BULLET_SIZE / 2, bullet.y + 11, BULLET_RADIUS)
       )
     }
 
