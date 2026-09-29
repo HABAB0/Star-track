@@ -45,6 +45,7 @@ const resetGame = () => {
   score.value = 0
   gameTime.value = 0
   gameKey.value ++
+  isLose.value = false
   closeMenu()
 }
 
@@ -71,6 +72,14 @@ watch(inMenu, (paused) => {
   }
 })
 
+watch(isLose, (lost) => {
+  if (lost) {
+    pause()
+  } else {
+    resume()
+  }
+})
+
 useEventListener(window, 'keydown', (event) => {
   if (event.code === 'Escape') {
     inMenu.value = !inMenu.value
@@ -88,10 +97,11 @@ useEventListener(window, 'keydown', (event) => {
         <p class="absolute p-8 text-3xl">{{ formattedTime }} | {{ score }}</p>
         <div
             v-show="isLose"
-            class="flex absolute z-40 items-center justify-start  w-screen h-screen bg-black"
-            @click="exit"
+            class="game-over"
+            @click="resetGame"
           >
-          <p class="text-white text-5xl">GAME OVER</p>
+          <p class="game-over__title">GAME OVER</p>
+          <p class="game-over__hint">click to restart</p>
         </div>
         <div v-if="inMenu" class="absolute z-10 flex justify-center items-center w-full h-full bg-black opacity-80">
             <div class="flex flex-col gap-10">
@@ -130,6 +140,7 @@ useEventListener(window, 'keydown', (event) => {
               @lose-game=""
               :bullets="bullets"
               :inMenu="inMenu"
+              :game-over="isLose"
               @destroy-meteor="addScore"
               :difficulty="difficulty"
               @loseGame="loseGame"
@@ -141,6 +152,7 @@ useEventListener(window, 'keydown', (event) => {
               :ship-pos-x="posX"
               :ship-pos-y="posY"
               :inMenu="inMenu"
+              :game-over="isLose"
           />
         </div>
         <div class="">
@@ -149,6 +161,7 @@ useEventListener(window, 'keydown', (event) => {
               v-model:pos-x="posX"
               v-model:pos-y="posY"
               :inMenu="inMenu"
+              :game-over="isLose"
           />
         </div>
       </div>
@@ -178,6 +191,34 @@ useEventListener(window, 'keydown', (event) => {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.game-over {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+.game-over__title {
+  color: #fff;
+  font-size: 56px;
+  -webkit-text-stroke: 2px #000;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.6), 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.game-over__hint {
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
 }
 
 .menu-item {

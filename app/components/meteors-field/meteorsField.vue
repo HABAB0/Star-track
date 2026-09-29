@@ -7,6 +7,7 @@ interface Props {
   shipPosY: number
   bullets: bullet[]
   inMenu: boolean
+  gameOver: boolean
   difficulty: 'easy' | 'normal' | 'hard'
 }
 
@@ -34,7 +35,7 @@ const speed = () => {
 }
 
 const meteorSpawner = () => {
-  if (props.inMenu) return
+  if (props.inMenu || props.gameOver) return
   meteorField.value.push({
     id: crypto.randomUUID(),
     image: meteorsBg[Math.floor(Math.random() * meteorsBg.length)],
@@ -52,7 +53,7 @@ const deleteMeteor = (id: string) => {
 
 const checkCollision = () => {
   let gameOver = false
-  if (props.inMenu) return
+  if (props.inMenu || props.gameOver) return
 
   meteorField.value = meteorField.value.filter(meteor => {
     const hitShip =
@@ -89,7 +90,7 @@ const checkCollision = () => {
 }
 
 useRafFn(() => {
-  if (props.inMenu) return
+  if (props.inMenu || props.gameOver) return
   meteorField.value.forEach(meteor => {
     meteor.y += meteor.speed
     meteor.rotation += Math.random() * 2

@@ -4,6 +4,7 @@ import {useEventListener, useRafFn} from "@vueuse/core";
 interface Props {
   gameSpace: HTMLElement
   inMenu: boolean
+  gameOver: boolean
 }
 
 const props = defineProps<Props>()
@@ -41,7 +42,7 @@ const handleKeyUp = (event: KeyboardEvent) => {
 }
 
 useRafFn(() => {
-  if (props.inMenu) return
+  if (props.inMenu || props.gameOver) return
   const spaceW = props.gameSpace.offsetWidth || 0
   const spaceH = props.gameSpace.offsetHeight || 0
   const shipW = ship.value?.offsetWidth || 0
