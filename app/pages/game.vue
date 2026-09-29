@@ -14,6 +14,16 @@ const gameKey = ref<number>(0)
 const isLose = ref<boolean>(false)
 const inSettings = ref<boolean>(false)
 const difficulty = ref<difficulty>('normal')
+const intro = ref<boolean>(true)
+
+const showIntro = () => {
+  intro.value = true
+  setTimeout(() => {
+    intro.value = false
+  }, 1600)
+}
+
+onMounted(showIntro)
 
 const options = [
   { value: 'easy', label: 'EASY' },
@@ -47,6 +57,7 @@ const resetGame = () => {
   gameKey.value ++
   isLose.value = false
   closeMenu()
+  showIntro()
 }
 
 const addScore = () => {
@@ -64,16 +75,10 @@ const { pause, resume } = useIntervalFn(() => {
 }, 1000)
 
 
-watch(inMenu, (paused) => {
-  if (paused) {
-    pause()
-  } else {
-    resume()
-  }
-})
+const gamePaused = computed(() => inMenu.value || isLose.value || intro.value)
 
-watch(isLose, (lost) => {
-  if (lost) {
+watch(gamePaused, (paused) => {
+  if (paused) {
     pause()
   } else {
     resume()
@@ -94,6 +99,9 @@ useEventListener(window, 'keydown', (event) => {
         :style="{ backgroundImage: `url('${useImg('/image/machine-zoomed.png')}')` }"
     >
       <div class="game" ref="gameSpace" :key="gameKey" :style="{ backgroundImage: `url('${useImg('/image/game-bg.png')}')` }">
+        <div v-if="intro" class="intro-overlay">
+          <p class="intro-overlay__text">GET READY</p>
+        </div>
         <p class="absolute p-8 text-3xl">{{ formattedTime }} | {{ score }}</p>
         <div
             v-show="isLose"
@@ -219,6 +227,46 @@ useEventListener(window, 'keydown', (event) => {
   letter-spacing: 0.25em;
   text-transform: uppercase;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.intro-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.intro-overlay__text {
+  color: #fff;
+  font-size: 52px;
+  letter-spacing: 0.25em;
+  animation: introPulse 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.9), 0 0 40px rgba(0, 255, 255, 0.7), 0 0 80px rgba(0, 255, 255, 0.4);
+}
+
+@keyframes introPulse {
+  0% {
+    transform: scale(3) rotate(-6deg);
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+  45% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+    letter-spacing: 0.25em;
+  }
+  70% {
+    transform: scale(0.96);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
 }
 
 .menu-item {
