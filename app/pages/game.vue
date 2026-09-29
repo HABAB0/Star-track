@@ -14,6 +14,16 @@ const gameKey = ref<number>(0)
 const isLose = ref<boolean>(false)
 const inSettings = ref<boolean>(false)
 const difficulty = ref<difficulty>('normal')
+const intro = ref<boolean>(true)
+
+const showIntro = () => {
+  intro.value = true
+  setTimeout(() => {
+    intro.value = false
+  }, 1600)
+}
+
+onMounted(showIntro)
 
 const options = [
   { value: 'easy', label: 'EASY' },
@@ -45,7 +55,9 @@ const resetGame = () => {
   score.value = 0
   gameTime.value = 0
   gameKey.value ++
+  isLose.value = false
   closeMenu()
+  showIntro()
 }
 
 const addScore = () => {
@@ -63,7 +75,9 @@ const { pause, resume } = useIntervalFn(() => {
 }, 1000)
 
 
-watch(inMenu, (paused) => {
+const gamePaused = computed(() => inMenu.value || isLose.value || intro.value)
+
+watch(gamePaused, (paused) => {
   if (paused) {
     pause()
   } else {
@@ -82,15 +96,20 @@ useEventListener(window, 'keydown', (event) => {
   <div class="w-screen h-screen bg-black">
     <div
         class="main"
+        :style="{ backgroundImage: `url('${useImg('/image/machine-zoomed.png')}')` }"
     >
-      <div class="game" ref="gameSpace" :key="gameKey">
+      <div class="game" ref="gameSpace" :key="gameKey" :style="{ backgroundImage: `url('${useImg('/image/game-bg.png')}')` }">
+        <div v-if="intro" class="intro-overlay">
+          <p class="intro-overlay__text">GET READY</p>
+        </div>
         <p class="absolute p-8 text-3xl">{{ formattedTime }} | {{ score }}</p>
         <div
             v-show="isLose"
-            class="flex absolute z-40 items-center justify-start  w-screen h-screen bg-black"
-            @click="exit"
+            class="game-over"
+            @click="resetGame"
           >
-          <p class="text-white text-5xl">GAME OVER</p>
+          <p class="game-over__title">GAME OVER</p>
+          <p class="game-over__hint">click to restart</p>
         </div>
         <div v-if="inMenu" class="absolute z-10 flex justify-center items-center w-full h-full bg-black opacity-80">
             <div class="flex flex-col gap-10">
@@ -129,6 +148,7 @@ useEventListener(window, 'keydown', (event) => {
               @lose-game=""
               :bullets="bullets"
               :inMenu="inMenu"
+              :game-over="isLose"
               @destroy-meteor="addScore"
               :difficulty="difficulty"
               @loseGame="loseGame"
@@ -140,6 +160,7 @@ useEventListener(window, 'keydown', (event) => {
               :ship-pos-x="posX"
               :ship-pos-y="posY"
               :inMenu="inMenu"
+              :game-over="isLose"
           />
         </div>
         <div class="">
@@ -148,6 +169,7 @@ useEventListener(window, 'keydown', (event) => {
               v-model:pos-x="posX"
               v-model:pos-y="posY"
               :inMenu="inMenu"
+              :game-over="isLose"
           />
         </div>
       </div>
@@ -160,7 +182,6 @@ useEventListener(window, 'keydown', (event) => {
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-image: url("/image/machine-zoomed.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -175,10 +196,77 @@ useEventListener(window, 'keydown', (event) => {
   margin-bottom: 7%;
   overflow: hidden;
   position: relative;
-  background-image: url("/image/game-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.game-over {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+.game-over__title {
+  color: #fff;
+  font-size: 56px;
+  -webkit-text-stroke: 2px #000;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.6), 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.game-over__hint {
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.intro-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.intro-overlay__text {
+  color: #fff;
+  font-size: 52px;
+  letter-spacing: 0.25em;
+  animation: introPulse 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.9), 0 0 40px rgba(0, 255, 255, 0.7), 0 0 80px rgba(0, 255, 255, 0.4);
+}
+
+@keyframes introPulse {
+  0% {
+    transform: scale(3) rotate(-6deg);
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+  45% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+    letter-spacing: 0.25em;
+  }
+  70% {
+    transform: scale(0.96);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
 }
 
 .menu-item {

@@ -19,6 +19,7 @@ useEventListener(window,'click', handleListener)
     <div
         class="main"
         :class="{ zoom: !clickToStart }"
+        :style="{ backgroundImage: `url('${useImg('/image/main-bg.png')}')` }"
         @animationend="onAnimationEnd"
     >
       <p
@@ -27,6 +28,7 @@ useEventListener(window,'click', handleListener)
       >
         Press any button
       </p>
+      <div v-if="!clickToStart" class="warp-flash" aria-hidden="true"></div>
     </div>
 </template>
 <style>
@@ -34,7 +36,6 @@ useEventListener(window,'click', handleListener)
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-image: url("/image/main-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -44,16 +45,41 @@ useEventListener(window,'click', handleListener)
 
 .zoom {
   overflow: hidden;
-  animation: zoomIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: warpZoom 1.8s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
-@keyframes zoomIn {
+@keyframes warpZoom {
   0% {
-    transform: scale(1);
-    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  55% {
+    transform: scale(2.3) rotate(1deg);
+    filter: brightness(1.4);
   }
   100% {
-    transform: scale(3.7);
+    transform: scale(6.5) rotate(-2deg);
+    filter: brightness(2.8);
+  }
+}
+
+.warp-flash {
+  position: absolute;
+  inset: -10%;
+  background: radial-gradient(circle at 50% 29%, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0.95) 100%);
+  pointer-events: none;
+  animation: flashOut 1.8s ease-in forwards;
+  z-index: 2;
+}
+
+@keyframes flashOut {
+  0% {
+    opacity: 0;
+  }
+  65% {
+    opacity: 0.9;
+  }
+  100% {
     opacity: 1;
   }
 }

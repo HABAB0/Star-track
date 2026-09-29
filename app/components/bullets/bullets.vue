@@ -7,6 +7,7 @@ interface Props {
   shipPosY: number
   bullets: bullet[]
   inMenu: boolean
+  gameOver: boolean
 }
 
 const props = defineProps<Props>()
@@ -19,7 +20,7 @@ const bullets = ref<bullet[]>([])
 const sleeves = ref<sleeve[]>([])
 
 const bulletSpawner = () => {
-  if (props.inMenu) return
+  if (props.inMenu || props.gameOver) return
   bullets.value.push({
     id: crypto.randomUUID(),
     x: (props.shipPosX + (144 / 2)),
@@ -40,7 +41,7 @@ const bulletSpawner = () => {
 }
 
 useRafFn(() => {
-  if (props.inMenu) return
+  if (props.inMenu || props.gameOver) return
   bullets.value.forEach(bullet => {
     bullet.y -= 15
   })
@@ -73,7 +74,7 @@ useEventListener(window, 'keyup',(event) => {
           top: `${bullet.y}px`,
         }"
     >
-      <img src="/image/banana/ammo.png" alt="пуля">
+      <img :src="useImg('/image/banana/ammo.png')" alt="пуля">
     </div>
     <div
         v-for="sleeve in sleeves"
@@ -85,7 +86,7 @@ useEventListener(window, 'keyup',(event) => {
           transform: `rotate(${sleeve.rotation}deg)`
         }"
     >
-      <img src="/image/banana/sleeves.png" alt="гильза">
+      <img :src="useImg('/image/banana/sleeves.png')" alt="гильза">
     </div>
   </div>
 </template>
