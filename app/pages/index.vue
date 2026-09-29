@@ -19,6 +19,7 @@ useEventListener(window,'click', handleListener)
     <div
         class="main"
         :class="{ zoom: !clickToStart }"
+        :style="{ backgroundImage: `url('${useImg('/image/main-bg.png')}')` }"
         @animationend="onAnimationEnd"
     >
       <p
@@ -34,7 +35,6 @@ useEventListener(window,'click', handleListener)
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-image: url("/image/main-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -18,9 +18,9 @@ const emit = defineEmits<{
 }>()
 
 const meteorsBg = [
-    '/image/meteorite/base-meteor.png',
-    '/image/meteorite/fire-meteor.png',
-    '/image/meteorite/moon-meteor.png'
+    useImg('/image/meteorite/base-meteor.png'),
+    useImg('/image/meteorite/fire-meteor.png'),
+    useImg('/image/meteorite/moon-meteor.png')
 ]
 const meteorSpace = ref<HTMLElement>()
 const { width, height } = useElementSize(meteorSpace)

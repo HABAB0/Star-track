@@ -82,8 +82,9 @@ useEventListener(window, 'keydown', (event) => {
   <div class="w-screen h-screen bg-black">
     <div
         class="main"
+        :style="{ backgroundImage: `url('${useImg('/image/machine-zoomed.png')}')` }"
     >
-      <div class="game" ref="gameSpace" :key="gameKey">
+      <div class="game" ref="gameSpace" :key="gameKey" :style="{ backgroundImage: `url('${useImg('/image/game-bg.png')}')` }">
         <p class="absolute p-8 text-3xl">{{ formattedTime }} | {{ score }}</p>
         <div
             v-show="isLose"
@@ -160,7 +161,6 @@ useEventListener(window, 'keydown', (event) => {
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-image: url("/image/machine-zoomed.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -175,7 +175,6 @@ useEventListener(window, 'keydown', (event) => {
   margin-bottom: 7%;
   overflow: hidden;
   position: relative;
-  background-image: url("/image/game-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

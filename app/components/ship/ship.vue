@@ -77,7 +77,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <img class="ship" :style="{ top: `${posY}px`, left: `${posX}px` }" ref="ship" src="/image/ship.png" alt="корабль">
+    <img class="ship" :style="{ top: `${posY}px`, left: `${posX}px` }" ref="ship" :src="useImg('/image/ship.png')" alt="корабль">
 </template>
 
 <style scoped>

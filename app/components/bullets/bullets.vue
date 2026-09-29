@@ -73,7 +73,7 @@ useEventListener(window, 'keyup',(event) => {
           top: `${bullet.y}px`,
         }"
     >
-      <img src="/image/banana/ammo.png" alt="пуля">
+      <img :src="useImg('/image/banana/ammo.png')" alt="пуля">
     </div>
     <div
         v-for="sleeve in sleeves"
@@ -85,7 +85,7 @@ useEventListener(window, 'keyup',(event) => {
           transform: `rotate(${sleeve.rotation}deg)`
         }"
     >
-      <img src="/image/banana/sleeves.png" alt="гильза">
+      <img :src="useImg('/image/banana/sleeves.png')" alt="гильза">
     </div>
   </div>
 </template>
