@@ -26,6 +26,8 @@ const meteorsBg = [
 const meteorSpace = ref<HTMLElement>()
 const { width, height } = useElementSize(meteorSpace)
 
+const METEOR_SIZE = 90
+
 const meteorField = ref<meteor[]>([])
 
 const speed = () => {
@@ -39,7 +41,9 @@ const meteorSpawner = () => {
   meteorField.value.push({
     id: crypto.randomUUID(),
     image: meteorsBg[Math.floor(Math.random() * meteorsBg.length)],
-    x: Math.random() * width.value,
+    x: width.value > METEOR_SIZE
+        ? Math.random() * (width.value - METEOR_SIZE)
+        : 0,
     y: -100,
     speed: 2 + Math.random() * speed(),
     rotation: 0
@@ -120,7 +124,15 @@ const { pause, resume } = useIntervalFn(meteorSpawner, 1000)
 </template>
 
 <style scoped>
-.meteor-img {
+.meteor {
   width: 90px;
+  height: 90px;
+}
+
+.meteor-img {
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  object-fit: contain;
 }
 </style>
